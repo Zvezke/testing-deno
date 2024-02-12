@@ -1,10 +1,14 @@
-import { serve } from "https://deno.land/std@0.215.0/http/server.ts";
+import { Application, Router } from "https://deno.land/x/oak/mod.ts";
 
-let port = parseInt(Deno.env.get("PORT") ?? "8000");
-const s = serve({ port });
+const app = new Application();
+const router = new Router();
 
-console.log(`http://localhost:${port}/`);
+router.get("/", (context: any) => {
+  context.response.body = "Hello world!";
+});
 
-for await (const req of s) {
-	req.respond({ body: "Choo Choo! Welcome to your Deno app\n" });
-}
+app.use(router.routes());
+app.use(router.allowedMethods());
+
+await app.listen({ port: 8000 });
+console.log("Server running on http://localhost:8000");
